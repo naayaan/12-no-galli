@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>12 Number Galli</title>
+  <style>
+    :root[data-theme="dark"] {
+      --bg: #0a0a0f;
+      --bg2: #111118;
+      --surface: #1a1a24;
+      --surface2: #222230;
+      --border: #2a2a3a;
+      --text: #f0f0ff;
+      --text2: #a0a0c0;
+      --accent: #ff6b35;
+      --accent2: #ff9f1c;
+      --green: #2ecc71;
+      --card-shadow: 0 4px 24px rgba(0,0,0,0.4);
+    }
+    :root[data-theme="light"] {
+      --bg: #f5f5ff;
+      --bg2: #ebebff;
+      --surface: #ffffff;
+      --surface2: #f0f0ff;
+      --border: #d0d0e8;
+      --text: #1a1a2e;
+      --text2: #5a5a7a;
+      --accent: #ff6b35;
+      --accent2: #ff9f1c;
+      --green: #27ae60;
+      --card-shadow: 0 4px 24px rgba(0,0,0,0.1);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    /* ── NAVBAR ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: var(--bg2);
+      border-bottom: 1px solid var(--border);
+      padding: 0 20px;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 56px;
+      backdrop-filter: blur(12px);
+    }
+    .nav-logo {
+      font-size: 18px; font-weight: 900;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .nav-right { display: flex; align-items: center; gap: 12px; }
+    .theme-btn {
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 20px; padding: 6px 14px; cursor: pointer;
+      font-size: 13px; color: var(--text2); transition: all 0.2s;
+    }
+    .theme-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .msg-badge {
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      color: white; border-radius: 20px; padding: 5px 12px;
+      font-size: 12px; font-weight: 700;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      margin-top: 56px;
+      min-height: 92vh;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 40px 20px;
+      position: relative; overflow: hidden;
+      text-align: center;
+    }
+    .hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 50% 0%, rgba(255,107,53,0.15) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-photo-wrap {
+      width: 280px; height: 200px;
+      border-radius: 20px;
+      border: 3px solid var(--accent);
+      overflow: hidden;
+      margin-bottom: 32px;
+      box-shadow: 0 0 40px rgba(255,107,53,0.3);
+      background: var(--surface);
+      display: flex; align-items: center; justify-content: center;
+      position: relative;
+    }
+    .hero-photo-wrap img {
+      width: 100%; height: 100%; object-fit: cover;
+    }
+    .photo-placeholder {
+      display: flex; flex-direction: column; align-items: center; gap: 8px;
+      color: var(--text2); font-size: 13px;
+    }
+    .photo-placeholder .ph-icon { font-size: 48px; }
+    .upload-hint {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      background: rgba(0,0,0,0.7); color: white;
+      font-size: 11px; padding: 6px; text-align: center;
+    }
+    .hero-eyebrow {
+      font-size: 12px; letter-spacing: 3px; color: var(--accent);
+      text-transform: uppercase; font-weight: 600; margin-bottom: 12px;
+    }
+    .hero-title {
+      font-size: clamp(28px, 7vw, 56px);
+      font-weight: 900; line-height: 1.1;
+      margin-bottom: 16px;
+    }
+    .hero-title span {
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .hero-sub {
+      font-size: clamp(14px, 2.5vw, 18px);
+      color: var(--text2); max-width: 480px; line-height: 1.6;
+      margin-bottom: 32px;
+    }
+    .hero-btns { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+    .btn-primary {
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      color: white; border: none; border-radius: 12px;
+      padding: 13px 28px; font-size: 15px; font-weight: 700;
+      cursor: pointer; transition: opacity 0.2s, transform 0.15s;
+      text-decoration: none; display: inline-block;
+    }
+    .btn-primary:active { transform: scale(0.97); opacity: 0.9; }
+    .btn-outline {
+      background: transparent; color: var(--text);
+      border: 1px solid var(--border); border-radius: 12px;
+      padding: 13px 28px; font-size: 15px; font-weight: 600;
+      cursor: pointer; transition: border-color 0.2s;
+      text-decoration: none; display: inline-block;
+    }
+    .btn-outline:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* ── SECTION ── */
+    section { padding: 60px 20px; }
+    .section-inner { max-width: 700px; margin: 0 auto; }
+    .section-label {
+      font-size: 11px; letter-spacing: 3px; color: var(--accent);
+      text-transform: uppercase; font-weight: 700; margin-bottom: 8px;
+    }
+    .section-title {
+      font-size: clamp(22px, 4vw, 32px); font-weight: 900; margin-bottom: 24px;
+    }
+
+    /* ── FRIENDS SECTION ── */
+    .friends-section { background: var(--bg2); }
+    .friends-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 20px; overflow: hidden;
+      box-shadow: var(--card-shadow);
+    }
+    .friends-photo {
+      width: 100%; height: 220px; object-fit: cover;
+      background: var(--surface2);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--text2); font-size: 14px;
+    }
+    .friends-photo img { width: 100%; height: 100%; object-fit: cover; }
+    .friends-body { padding: 24px; }
+    .friends-body h3 { font-size: 20px; font-weight: 800; margin-bottom: 10px; }
+    .friends-body p { color: var(--text2); line-height: 1.7; font-size: 14px; }
+    .friends-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+    .tag {
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 20px; padding: 4px 12px; font-size: 12px; color: var(--text2);
+    }
+
+    /* ── COMPOSE ── */
+    .compose-section { background: var(--bg); }
+    .compose-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 20px; padding: 28px;
+      box-shadow: var(--card-shadow);
+    }
+    .compose-card h3 { font-size: 18px; font-weight: 800; margin-bottom: 20px; }
+    .field { margin-bottom: 14px; }
+    .field label { display: block; font-size: 12px; color: var(--text2); margin-bottom: 6px; letter-spacing: 0.5px; text-transform: uppercase; }
+    .field input, .field textarea {
+      width: 100%; background: var(--bg);
+      border: 1px solid var(--border); border-radius: 12px;
+      padding: 12px 14px; font-size: 14px; color: var(--text);
+      outline: none; font-family: inherit; transition: border 0.2s;
+    }
+    .field input:focus, .field textarea:focus { border-color: var(--accent); }
+    .field textarea { resize: vertical; min-height: 90px; line-height: 1.5; }
+    .field-row { display: flex; gap: 10px; align-items: flex-end; flex-wrap: wrap; }
+    .field-row .field { flex: 1; min-width: 140px; margin-bottom: 0; }
+    .anon-wrap {
+      display: flex; align-items: center; gap: 6px;
+      background: var(--bg); border: 1px solid var(--border);
+      border-radius: 12px; padding: 11px 14px; cursor: pointer;
+      font-size: 13px; color: var(--text2); white-space: nowrap;
+      user-select: none; flex-shrink: 0;
+    }
+    input[type="checkbox"] { accent-color: var(--accent); }
+    .char-wrap { position: relative; }
+    .char-left { position: absolute; bottom: 10px; right: 12px; font-size: 11px; color: var(--text2); pointer-events: none; }
+    .char-left.warn { color: #ef4444; }
+    .error-msg { background: rgba(239,68,68,0.1); color: #f87171; border-radius: 8px; padding: 8px 12px; font-size: 13px; margin-top: 10px; display: none; }
+    .submit-btn {
+      width: 100%; margin-top: 16px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      color: white; border: none; border-radius: 12px;
+      padding: 14px; font-size: 16px; font-weight: 700;
+      cursor: pointer; transition: opacity 0.2s, transform 0.15s;
+    }
+    .submit-btn:active { transform: scale(0.98); }
+    .submit-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+    .submit-btn.success { background: linear-gradient(90deg, #2ecc71, #27ae60); }
+
+    /* ── WALL ── */
+    .wall-section { background: var(--bg2); }
+    .wall-controls {
+      display: flex; gap: 10px; align-items: center;
+      flex-wrap: wrap; margin-bottom: 20px;
+    }
+    .search-wrap { position: relative; flex: 1; min-width: 180px; }
+    .search-wrap input { padding-left: 36px; background: var(--surface); border-radius: 12px; }
+    .search-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text2); font-size: 14px; pointer-events: none; }
+    .sort-btn {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 12px; padding: 10px 16px; font-size: 13px;
+      color: var(--text2); cursor: pointer; white-space: nowrap;
+    }
+    .sort-btn.active { border-color: var(--accent); color: var(--accent); }
+
+    #wall { display: flex; flex-direction: column; gap: 14px; }
+
+    .msg-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 16px; padding: 18px 20px;
+      box-shadow: var(--card-shadow); position: relative;
+      opacity: 0; transform: translateY(14px);
+      transition: opacity 0.35s ease, transform 0.35s ease;
+    }
+    .msg-card.visible { opacity: 1; transform: translateY(0); }
+    .msg-card:hover { border-color: var(--accent); }
+    .anon-tag {
+      position: absolute; top: 14px; right: 16px;
+      font-size: 10px; color: var(--text2); background: var(--surface2);
+      border: 1px solid var(--border); border-radius: 20px; padding: 2px 8px;
+    }
+    .card-head { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+    .avatar {
+      width: 42px; height: 42px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 17px; font-weight: 800; flex-shrink: 0;
+    }
+    .card-name { font-weight: 800; font-size: 15px; }
+    .card-time { font-size: 11px; color: var(--text2); }
+    .card-text {
+      font-size: 15px; color: var(--text2); line-height: 1.65;
+      word-break: break-word; font-style: italic;
+    }
+    .card-footer {
+      margin-top: 12px; padding-top: 10px;
+      border-top: 1px solid var(--border);
+      font-size: 11px; color: var(--text2);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+
+    /* ── STATUS ── */
+    .status-pill {
+      text-align: center; border-radius: 12px; padding: 10px 16px;
+      font-size: 13px; margin-bottom: 16px; display: none;
+    }
+    .status-pill.show { display: block; }
+    .status-pill.loading { background: rgba(99,102,241,0.1); color: #818cf8; }
+    .status-pill.ok { background: rgba(46,204,113,0.1); color: var(--green); }
+    .status-pill.err { background: rgba(239,68,68,0.1); color: #f87171; }
+
+    /* ── EMPTY ── */
+    .empty { text-align: center; padding: 48px 20px; color: var(--text2); }
+    .empty-icon { font-size: 52px; margin-bottom: 12px; }
+    .empty-title { font-size: 17px; font-weight: 700; }
+    .empty-sub { font-size: 13px; margin-top: 6px; }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--bg); border-top: 1px solid var(--border);
+      text-align: center; padding: 28px 20px;
+      font-size: 13px; color: var(--text2);
+    }
+    footer strong { color: var(--accent); }
+
+    /* ── SCROLL TOP ── */
+    .scroll-top {
+      position: fixed; bottom: 24px; right: 20px;
+      width: 44px; height: 44px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      border: none; color: white; font-size: 18px; cursor: pointer;
+      display: none; align-items: center; justify-content: center;
+      box-shadow: 0 4px 16px rgba(255,107,53,0.4);
+      transition: transform 0.2s;
+    }
+    .scroll-top.show { display: flex; }
+    .scroll-top:hover { transform: scale(1.1); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 480px) {
+      .hero-photo-wrap { width: 240px; height: 170px; }
+      .compose-card { padding: 20px 16px; }
+      nav { padding: 0 14px; }
+    }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+    .fade-up { animation: fadeUp 0.5s ease forwards; }
+    .delay-1 { animation-delay: 0.1s; opacity: 0; }
+    .delay-2 { animation-delay: 0.2s; opacity: 0; }
+    .delay-3 { animation-delay: 0.3s; opacity: 0; }
+  </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav>
+  <div class="nav-logo">🏠 12 Number Galli</div>
+  <div class="nav-right">
+    <div class="msg-badge" id="navCount">0 messages</div>
+    <button class="theme-btn" onclick="toggleTheme()" id="themeBtn">☀️ Light</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="hero-photo-wrap">
+    <div class="photo-placeholder" id="photoPlaceholder">
+      <div class="ph-icon">📸</div>
+      <div>Group photo yahan aayegi</div>
+    </div>
+    <img id="heroImg" src="" alt="12 Number Galli Gang" style="display:none"/>
+    <div class="upload-hint">Apni group photo add karo neeche 👇</div>
+  </div>
+  <div class="hero-eyebrow fade-up">Est. Humare dil mein ♥️</div>
+  <h1 class="hero-title fade-up delay-1">Welcome to <span>12 Number Galli</span></h1>
+  <p class="hero-sub fade-up delay-2">The official message wall for our friends and community. Yaadein, jokes, announcements — sab kuch yahan!</p>
+  <div class="hero-btns fade-up delay-3">
+    <a href="#wall" class="btn-primary">📌 Leave a Message</a>
+    <a href="#friends" class="btn-outline">👥 Our Friends</a>
+  </div>
+</section>
+
+<!-- FRIENDS SECTION -->
+<section class="friends-section" id="friends">
+  <div class="section-inner">
+    <div class="section-label">Our Crew</div>
+    <h2 class="section-title">12 Number Galli Gang 🔥</h2>
+    <div class="friends-card">
+      <div class="friends-photo" id="friendsPhotoWrap">
+        <div style="text-align:center;padding:20px;">
+          <div style="font-size:48px;margin-bottom:8px">📸</div>
+          <div>Group photo yahan dikhegi</div>
+        </div>
+      </div>
+      <div class="friends-body">
+        <h3>Humari Galli, Humara Ghar 🏠</h3>
+        <p>12 Number Galli — jahan dosti ki koi expiry date nahi. Yeh wall humari yaadein, jokes, announcements aur sab kuch ke liye hai. Chahe tum door ho ya paas, yahan apna message zaroor chhod ke jao!</p>
+        <div class="friends-tags">
+          <span class="tag">🎉 Dosti</span>
+          <span class="tag">🏏 Cricket</span>
+          <span class="tag">🍕 Khana</span>
+          <span class="tag">😂 Mazak</span>
+          <span class="tag">🌙 Raatein</span>
+          <span class="tag">🤝 Yaadein</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COMPOSE SECTION -->
+<section class="compose-section" id="compose">
+  <div class="section-inner">
+    <div class="section-label">Message Wall</div>
+    <h2 class="section-title">Apna Message Chhod Jao ✍️</h2>
+    <div class="compose-card">
+      <div class="field-row" style="margin-bottom:14px;">
+        <div class="field">
+          <label>Tumhara Naam</label>
+          <input type="text" id="nameInput" placeholder="Naam likho..." maxlength="30" autocomplete="off"/>
+        </div>
+        <label class="anon-wrap">
+          <input type="checkbox" id="anonCheck" onchange="toggleAnon()"/> Anonymous
+        </label>
+      </div>
+      <div class="field">
+        <label>Tumhara Message</label>
+        <div class="char-wrap">
+          <textarea id="msgInput" placeholder="Kuch bhi likho — yaad, joke, shayari, sab welcome hai! 😄" maxlength="500" oninput="updateChar()" onkeydown="handleKey(event)"></textarea>
+          <div class="char-left" id="charLeft">500</div>
+        </div>
+      </div>
+      <div class="error-msg" id="errorMsg"></div>
+      <button class="submit-btn" id="submitBtn" onclick="submitMessage()">📌 Post to Wall</button>
+    </div>
+  </div>
+</section>
+
+<!-- WALL SECTION -->
+<section class="wall-section" id="wall">
+  <div class="section-inner">
+    <div class="section-label">Community Wall</div>
+    <h2 class="section-title">Saare Messages 💬</h2>
+
+    <div class="status-pill loading show" id="statusPill">🔄 Wall load ho rahi hai...</div>
+
+    <div class="wall-controls">
+      <div class="search-wrap">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="searchInput" placeholder="Search messages..." oninput="filterWall()"/>
+      </div>
+    </div>
+
+    <div id="wall"></div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div style="font-size:24px;margin-bottom:8px">🏠</div>
+  <strong>12 Number Galli</strong> — Humari Dosti, Humara Ghar<br/>
+  <span style="font-size:12px;margin-top:6px;display:block">Powered by Gun.js · Messages hamesha save rehte hain</span>
+</footer>
+
+<!-- SCROLL TOP -->
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<script src="https://cdn.jsdelivr.net/npm/gun/gun.js"></script>
+<script>
+  // ── CONFIG ──────────────────────────────────────────────────
+  const GUN_PEERS = [
+    'wss://gun-us.herokuapp.com/gun',
+    'wss://gun-eu.herokuapp.com/gun',
+    'https://gundb-relay-mlccl.ondigitalocean.app/gun'
+  ];
+  const WALL_KEY = 'galli_12_wall_v1';
+  const COLORS = ['#ff6b35','#ff9f1c','#2ecc71','#3b82f6','#a855f7','#ec4899','#14b8a6','#f59e0b'];
+
+  // ── PHOTO — paste your image URL here ───────────────────────
+  // Agar photo add karni hai toh ImgBB pe upload karo
+  // aur neeche wali line mein URL daal do:
+  const GROUP_PHOTO_URL = ''; // <-- yahan URL daalo
+
+  // ── HELPERS ─────────────────────────────────────────────────
+  function colorFor(name) { return COLORS[(name||'?').charCodeAt(0) % COLORS.length]; }
+  function sanitize(s) { return s.replace(/[<>]/g,'').replace(/\s+/g,' ').trim().slice(0,500); }
+  function escHtml(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+  function timeAgo(ts) {
+    const d = Date.now() - ts;
+    if (d < 60000) return 'abhi abhi';
+    if (d < 3600000) return Math.floor(d/60000) + ' min pehle';
+    if (d < 86400000) return Math.floor(d/3600000) + ' ghante pehle';
+    return Math.floor(d/86400000) + ' din pehle';
+  }
+  function fullDate(ts) {
+    return new Date(ts).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'})
+      + ' · ' + new Date(ts).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
+  }
+
+  // ── PHOTO SETUP ─────────────────────────────────────────────
+  if (GROUP_PHOTO_URL) {
+    document.getElementById('photoPlaceholder').style.display = 'none';
+    const img = document.getElementById('heroImg');
+    img.src = GROUP_PHOTO_URL; img.style.display = 'block';
+    document.getElementById('friendsPhotoWrap').innerHTML = <img src="${GROUP_PHOTO_URL}" alt="Gang" style="width:100%;height:220px;object-fit:cover"/>;
+  }
+
+  // ── THEME ───────────────────────────────────────────────────
+  let theme = localStorage.getItem('galli_theme') || 'dark';
+  applyTheme(theme);
+  function toggleTheme() {
+    theme = theme === 'dark' ? 'light' : 'dark';
+    localStorage.setItem('galli_theme', theme);
+    applyTheme(theme);
+  }
+  function applyTheme(t) {
+    document.documentElement.setAttribute('data-theme', t);
+    document.getElementById('themeBtn').textContent = t === 'dark' ? '☀️ Light' : '🌙 Dark';
+  }
+
+  // ── SCROLL TOP ──────────────────────────────────────────────
+  window.addEventListener('scroll', () => {
+    document.getElementById('scrollTop').classList.toggle('show', window.scrollY > 300);
+  });
+
+  // ── GUN SETUP ───────────────────────────────────────────────
+  let allMessages = [], seenKeys = new Set(), connected = false;
+  const gun = Gun({ peers: GUN_PEERS, localStorage: true });
+  const wallRef = gun.get(WALL_KEY).get('msgs');
+
+  wallRef.map().on((data, key) => {
+    if (!data || !data.text || seenKeys.has(key)) return;
+    seenKeys.add(key);
+    if (!connected) {
+      connected = true;
+      setStatus('ok', '✅ Wall connected!');
+      setTimeout(() => setStatus('', ''), 3000);
+    }
+    allMessages.push({...data, _key: key});
+    allMessages.sort((a,b) => b.time - a.time);
+    renderWall();
+    updateCount();
+  });
+
+  setTimeout(() => {
+    if (!connected) {
+      if (allMessages.length === 0) {
+        setStatus('', '');
+        showEmpty();
+      }
+    }
+  }, 5000);
+
+  // ── STATUS ──────────────────────────────────────────────────
+  function setStatus(type, msg) {
+    const el = document.getElementById('statusPill');
+    if (!type) { el.className = 'status-pill'; return; }
+    el.className = 'status-pill ' + type + ' show';
+    el.textContent = msg;
+  }
+
+  // ── COUNT ───────────────────────────────────────────────────
+  function updateCount() {
+    const n = allMessages.length;
+    const t = n + ' message' + (n !== 1 ? 's' : '');
+    document.getElementById('navCount').textContent = t;
+  }
+
+  // ── RENDER ──────────────────────────────────────────────────
+  function renderWall() {
+    const q = document.getElementById('searchInput').value.toLowerCase().trim();
+    const list = q
+      ? allMessages.filter(m => m.text?.toLowerCase().includes(q) || (!m.anonymous && m.sender?.toLowerCase().includes(q)))
+      : allMessages;
+
+    const wall = document.getElementById('wall');
+    wall.innerHTML = '';
+
+    if (!list.length && q) {
+      wall.innerHTML = <div class="empty"><div class="empty-icon">🔍</div><div class="empty-title">Koi result nahi mila</div><div class="empty-sub">"${escHtml(q)}" ke liye koi message nahi hai.</div></div>;
+      return;
+    }
+    if (!list.length) { showEmpty(); return; }
+
+    list.forEach((msg, idx) => {
+      const color = colorFor(msg.anonymous ? '🎭' : msg.sender);
+      const letter = (msg.anonymous ? '?' : (msg.sender || '?'))[0].toUpperCase();
+
+      const card = document.createElement('div');
+      card.className = 'msg-card';
+      card.style.borderLeft = 3px solid ${color};
+      card.innerHTML = `
+        ${msg.anonymous ? '<span class="anon-tag">ANON</span>' : ''}
+        <div class="card-head">
+          <div class="avatar" style="background:${color}22;border:2px solid ${color};color:${color}">${letter}</div>
+          <div>
+            <div class="card-name" style="color:${msg.anonymous?'var(--text2)':color}">${msg.anonymous ? 'Anonymous' : escHtml(msg.sender)}</div>
+            <div class="card-time">${timeAgo(msg.time)}</div>
+          </div>
+        </div>
+        <div class="card-text">"${escHtml(msg.text)}"</div>
+        <div class="card-footer">
+          <span>${fullDate(msg.time)}</span>
+          <span>12 Number Galli 🏠</span>
+        </div>`;
+      wall.appendChild(card);
+      requestAnimationFrame(() => setTimeout(() => card.classList.add('visible'), idx * 55));
+    });
+  }
+
+  function showEmpty() {
+    document.getElementById('wall').innerHTML = `
+      <div class="empty">
+        <div class="empty-icon">🪐</div>
+        <div class="empty-title">Abhi koi message nahi hai</div>
+        <div class="empty-sub">Pehla message likhne wale tum bano! ✨</div>
+      </div>`;
+  }
+
+  // ── POST ────────────────────────────────────────────────────
+  function submitMessage() {
+    const nameVal = sanitize(document.getElementById('nameInput').value);
+    const textVal = sanitize(document.getElementById('msgInput').value);
+    const isAnon = document.getElementById('anonCheck').checked;
+
+    if (!isAnon && nameVal.length < 2) { showError('Naam kam se kam 2 characters ka hona chahiye!'); return; }
+    if (textVal.length < 3) { showError('Message thoda lamba likho yaar!'); return; }
+    if (/https?:\/\//i.test(textVal)) { showError('Links allowed nahi hain.'); return; }
+
+    clearError();
+    const btn = document.getElementById('submitBtn');
+    btn.disabled = true; btn.textContent = '⏳ Post ho raha hai...';
+
+    const key = Date.now() + '_' + Math.random().toString(36).slice(2,7);
+    wallRef.get(key).put({
+      sender: isAnon ? 'Anonymous' : nameVal,
+      text: textVal,
+      anonymous: isAnon,
+      time: Date.now()
+    }, () => {
+      document.getElementById('msgInput').value = '';
+      updateChar();
+      btn.disabled = false;
+      btn.classList.add('success');
+      btn.textContent = '✅ Posted! Scroll neeche karo';
+      setTimeout(() => {
+        btn.textContent = '📌 Post to Wall';
+        btn.classList.remove('success');
+      }, 3000);
+      setTimeout(() => document.getElementById('wall').scrollIntoView({behavior:'smooth'}), 500);
+    });
+  }
+
+  // ── UI HELPERS ───────────────────────────────────────────────
+  function handleKey(e) { if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); submitMessage(); } }
+
+  function toggleAnon() {
+    const isAnon = document.getElementById('anonCheck').checked;
+    const ni = document.getElementById('nameInput');
+    ni.disabled = isAnon;
+    ni.placeholder = isAnon ? 'Anonymously posting...' : 'Naam likho...';
+    ni.style.opacity = isAnon ? '0.4' : '1';
+  }
+
+  function updateChar() {
+    const left = 500 - document.getElementById('msgInput').value.length;
+    const el = document.getElementById('charLeft');
+    el.textContent = left;
+    el.classList.toggle('warn', left < 50);
+  }
+
+  function filterWall() { renderWall(); }
+
+  function showError(msg) {
+    const el = document.getElementById('errorMsg');
+    el.textContent = '⚠️ ' + msg; el.style.display = 'block';
+  }
+  function clearError() { document.getElementById('errorMsg').style.display = 'none'; }
+</script>
+</body>
+</html>
